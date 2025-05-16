@@ -1,11 +1,4 @@
-//
-//  GenreManager.swift
-//  myTV
-//
-//  Created by Ezepue on 5/16/25.
-//
-
-import Foundation
+import UIKit
 
 class GenreManager {
     static let shared = GenreManager()
@@ -36,3 +29,12 @@ class GenreManager {
         return ids.compactMap { genreMap[$0] }
     }
 }
+
+extension Movie {
+    var genres: [String] {
+        return genreIDs != nil
+            ? GenreManager.shared.getGenres(for: genreIDs!)
+            : []
+    }
+}
+

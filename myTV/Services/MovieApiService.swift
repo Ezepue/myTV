@@ -7,6 +7,7 @@
 
 import Foundation
 
+/* Implements the singleton pattern with shared instance, stores TMDB API key and base URL, maintains a private dictionary to cache genre ID-name mappings */
 class MovieService {
     static let shared = MovieService()
     private let apiKey = "b1a3142e007af3cdca542de5201e9b4d"
@@ -27,7 +28,8 @@ class MovieService {
                 ("/movie/top_rated", "Top Chart"),
                 ("/movie/now_playing", "Featured")
             ]
-
+            
+            /* Makes parallel requests to each endpoint, marks section for each movie, accumulates results in allMovies */
             for (path, section) in endpoints {
                 dispatchGroup.enter()
                 self.fetchMovies(from: path) { movies in
@@ -52,7 +54,8 @@ class MovieService {
             completion([])
             return
         }
-
+        
+        // Performs network request and handles errors by returning empty array
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data else {
                 print("Error fetching movies: \(error?.localizedDescription ?? "Unknown error")")
@@ -95,25 +98,6 @@ class MovieService {
             }
         }.resume()
     }
-
-    func searchMovies(query: String, completion: @escaping ([Movie]) -> Void) {
-        let queryEncoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let urlString = "https://api.themoviedb.org/3/search/movie?api_key=\(apiKey)&query=\(queryEncoded)"
-        
-        guard let url = URL(string: urlString) else { return }
-
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data else { return }
-            do {
-                let response = try JSONDecoder().decode(MovieResponse.self, from: data)
-                DispatchQueue.main.async {
-                    completion(response.results)
-                }
-            } catch {
-                print("Search failed: \(error)")
-            }
-        }.resume()
-    }
 }
 
 // Genre Models
@@ -125,4 +109,3 @@ struct Genre: Decodable {
     let id: Int
     let name: String
 }
-
