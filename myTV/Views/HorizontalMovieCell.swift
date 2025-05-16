@@ -1,20 +1,19 @@
 //
-//  MovieCell.swift
+//  HorizontalMovieCell.swift
 //  myTV
 //
-//  Created by Ezepue on 5/15/25.
+//  Created by Ezepue on 5/16/25.
 //
 
 import UIKit
 
-class MovieCell: UICollectionViewCell {
-    static let identifier = "MovieCell"
+class HorizontalMovieCell: UICollectionViewCell {
+    static let identifier = "HorizontalMovieCell"
     private let imageView = UIImageView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupImageView()
-        setupShadow()
     }
 
     required init?(coder: NSCoder) {
@@ -44,14 +43,6 @@ class MovieCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
         contentView.addSubview(imageView)
-    }
-
-    private func setupShadow() {
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowOpacity = 0.3
-        contentView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        contentView.layer.shadowRadius = 4
-        contentView.layer.masksToBounds = false
     }
 
     private func loadImage(from url: URL) {
