@@ -1,8 +1,11 @@
 import UIKit
 
+// Singleton class used to map genre IDs (from TMDB API) to readable names
 class GenreManager {
+    // Shared instance for global access (singleton pattern)
     static let shared = GenreManager()
     
+    // Dictionary mapping TMDB genre IDs to human-readable genre names
     private let genreMap: [Int: String] = [
         28: "Action",
         12: "Adventure",
@@ -25,16 +28,19 @@ class GenreManager {
         37: "Western"
     ]
     
+    // Converts an array of genre IDs into their corresponding names
     func getGenres(for ids: [Int]) -> [String] {
+        // Uses compactMap to ignore any IDs not found in the map
         return ids.compactMap { genreMap[$0] }
     }
 }
 
+// Extension on Movie struct to expose genres as an array of strings
 extension Movie {
+    // Computed property: returns genre names from the genre IDs
     var genres: [String] {
         return genreIDs != nil
-            ? GenreManager.shared.getGenres(for: genreIDs!)
-            : []
+            ? GenreManager.shared.getGenres(for: genreIDs!)  // Force unwrapped because you check for nil
+            : [] // Returns empty array if genreIDs is nil
     }
 }
-

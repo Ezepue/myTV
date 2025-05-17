@@ -1,35 +1,49 @@
-import UIKit
+import UIKit  // UIKit provides the required UI components like UICollectionViewCell, UIImageView, UILabel, etc.
 
-// MARK: - MovieCell
-class MovieCell: UICollectionViewCell {
-    static let identifier = "MovieCell"
+// MARK: - BaseMovieCell
+/// A reusable base cell class for displaying a movie poster and title in a collection view.
+class BaseMovieCell: UICollectionViewCell {
+    
+    // Image view to show the movie poster
+    let imageView = UIImageView()
+    
+    // Label to show the movie title
+    let titleLabel = UILabel()
 
-    private let imageView = UIImageView()
-    private let titleLabel = UILabel()
-
+    // Initializer when creating the cell programmatically
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
-        styleCell()
+        setupViews()   // Add subviews and set up constraints
+        styleCell()    // Apply styling like corner radius and shadows
     }
 
+    // Required initializer for storyboard/XIB usage (not used here)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // Called when a cell is reused. Clears previous content.
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
         titleLabel.text = nil
     }
 
-    func configure(with movie: Movie) {
-        titleLabel.text = movie.title
+    /// Configures the cell with a Movie object.
+    /// - Parameters:
+    ///   - movie: The movie model to display.
+    ///   - showTitle: Determines whether to display the title label.
+    func configure(with movie: Movie, showTitle: Bool = true) {
+        titleLabel.isHidden = !showTitle
+        titleLabel.text = showTitle ? movie.title : nil
+        
+        // Asynchronously load the movie poster image
         if let url = movie.posterURL {
             imageView.loadImage(from: url)
         }
     }
 
+    // Sets up the view hierarchy and Auto Layout constraints
     private func setupViews() {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -42,139 +56,16 @@ class MovieCell: UICollectionViewCell {
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        // Add views to the contentView
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
 
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 120),
-            imageView.heightAnchor.constraint(equalToConstant: 180),
-            imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
-
-    private func styleCell() {
-        contentView.layer.cornerRadius = 12
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowOpacity = 0.3
-        contentView.layer.shadowOffset = CGSize(width: 0, height: 5)
-        contentView.layer.shadowRadius = 8
-        contentView.layer.masksToBounds = false
-        contentView.backgroundColor = .clear
-    }
-}
-
-
-// MARK: - HorizontalMovieCell
-class HorizontalMovieCell: UICollectionViewCell {
-    static let identifier = "HorizontalMovieCell"
-
-    private let imageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
-        iv.layer.cornerRadius = 12
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-        styleCell()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        imageView.image = nil
-    }
-
-    func configure(with movie: Movie) {
-        if let url = movie.posterURL {
-            imageView.loadImage(from: url)
-        }
-    }
-
-    private func setupViews() {
-        contentView.addSubview(imageView)
+        // Activate Auto Layout constraints
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-    }
-
-    private func styleCell() {
-        contentView.layer.cornerRadius = 12
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowOpacity = 0.3
-        contentView.layer.shadowOffset = CGSize(width: 0, height: 5)
-        contentView.layer.shadowRadius = 8
-        contentView.layer.masksToBounds = false
-        contentView.backgroundColor = .clear
-    }
-}
-
-
-// MARK: - SingleMovieCell
-class SingleMovieCell: UICollectionViewCell {
-    static let identifier = "SingleMovieCell"
-
-    private let imageView = UIImageView()
-    private let titleLabel = UILabel()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-        styleCell()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        imageView.image = nil
-        titleLabel.text = nil
-    }
-
-    func configure(with movie: Movie) {
-        titleLabel.text = movie.title
-        if let url = movie.posterURL {
-            imageView.loadImage(from: url)
-        }
-    }
-
-    private func setupViews() {
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 12
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-
-        titleLabel.textColor = .white
-        titleLabel.font = .systemFont(ofSize: 14, weight: .semibold)
-        titleLabel.numberOfLines = 2
-        titleLabel.textAlignment = .center
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        contentView.addSubview(imageView)
-        contentView.addSubview(titleLabel)
-
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 200),
-            imageView.heightAnchor.constraint(equalToConstant: 280),
-            imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
             titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -182,6 +73,7 @@ class SingleMovieCell: UICollectionViewCell {
         ])
     }
 
+    // Applies visual styles to the cell like corner radius and shadows
     private func styleCell() {
         contentView.layer.cornerRadius = 12
         contentView.layer.shadowColor = UIColor.black.cgColor
@@ -193,6 +85,27 @@ class SingleMovieCell: UICollectionViewCell {
     }
 }
 
+
+// MARK: - MovieCell
+class MovieCell: BaseMovieCell {
+    static let identifier = "MovieCell"
+}
+
+// MARK: - SingleMovieCell
+class SingleMovieCell: BaseMovieCell {
+    static let identifier = "SingleMovieCell"
+}
+
+// MARK: - HorizontalMovieCell
+class HorizontalMovieCell: BaseMovieCell {
+    static let identifier = "HorizontalMovieCell"
+
+    override func configure(with movie: Movie, showTitle: Bool = false) {
+        super.configure(with: movie, showTitle: showTitle)
+    }
+}
+
+// MARK: - UIImageView Extension
 extension UIImageView {
     func loadImage(from url: URL) {
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in

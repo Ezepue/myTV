@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  myTV
-//
-//  Created by Ezepue on 5/15/25.
-//
-
 import UIKit
 
 @main
@@ -33,4 +26,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-

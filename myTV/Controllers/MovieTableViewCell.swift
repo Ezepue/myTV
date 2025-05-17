@@ -1,13 +1,14 @@
 import UIKit
 
 class MovieTableViewCell: UITableViewCell {
-    static let identifier = "MovieTableViewCell"
+    static let identifier = "MovieTableViewCell" // Cell reuse identifier
 
     // MARK: - UI Elements
 
+    // Card-style container for content with rounded corners and shadow
     private let cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(white: 0.15, alpha: 1)
+        view.backgroundColor = UIColor(white: 0.15, alpha: 1) // Dark gray background
         view.layer.cornerRadius = 12
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.3
@@ -18,15 +19,17 @@ class MovieTableViewCell: UITableViewCell {
         return view
     }()
 
+    // Poster image
     private let posterImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
+        iv.clipsToBounds = true // Prevents image overflow
         iv.layer.cornerRadius = 10
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
 
+    // Movie title
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .headline)
@@ -36,6 +39,7 @@ class MovieTableViewCell: UITableViewCell {
         return label
     }()
 
+    // Release year
     private let yearLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .subheadline)
@@ -44,6 +48,7 @@ class MovieTableViewCell: UITableViewCell {
         return label
     }()
 
+    // Genre label
     private let genreLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
@@ -65,6 +70,7 @@ class MovieTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // Called before a cell is reused — reset image and labels to avoid flickering
     override func prepareForReuse() {
         super.prepareForReuse()
         posterImageView.image = UIImage(named: "placeholder")
@@ -77,12 +83,14 @@ class MovieTableViewCell: UITableViewCell {
     // MARK: - Setup Views
 
     private func setupViews() {
+        // Add and layout subviews
         contentView.addSubview(cardView)
         cardView.addSubview(posterImageView)
         cardView.addSubview(titleLabel)
         cardView.addSubview(yearLabel)
         cardView.addSubview(genreLabel)
 
+        // Apply constraints for layout
         NSLayoutConstraint.activate([
             cardView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -111,23 +119,31 @@ class MovieTableViewCell: UITableViewCell {
 
     // MARK: - Configure
 
-    private var imageURL: URL?
+    private var imageURL: URL? // Used to prevent loading wrong image after reuse
 
+    // Configure the cell with movie data
     func configure(with movie: Movie) {
         titleLabel.text = movie.title
         yearLabel.text = movie.releaseDate?.prefix(4).description ?? "N/A"
         genreLabel.text = movie.genres.joined(separator: " • ")
-        posterImageView.image = UIImage(named: "placeholder")
+        posterImageView.image = UIImage(named: "placeholder") // Placeholder before image loads
 
+        // Load poster image asynchronously
         guard let posterPath = movie.posterPath,
               let url = URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)") else {
             return
         }
 
-        imageURL = url
+        imageURL = url // Track current URL to avoid mismatch if cell reused
 
+        // Fetch image on a background thread
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            guard let self = self, let data = data, error == nil, self.imageURL == url else { return }
+            guard let self = self,
+                  let data = data,
+                  error == nil,
+                  self.imageURL == url else { return }
+
+            // Update UI on main thread
             DispatchQueue.main.async {
                 self.posterImageView.image = UIImage(data: data)
             }

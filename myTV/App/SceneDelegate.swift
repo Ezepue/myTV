@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  myTV
-//
-//  Created by Ezepue on 5/15/25.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
