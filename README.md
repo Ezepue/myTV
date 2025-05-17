@@ -79,7 +79,7 @@ myTV/
 
 ## 📸 Screenshots
 
-| Home | Detail | Search |
+| Home | Detail | Top Chart |
 |------|--------|--------|
 | ![Home](screenshots/home.png) | ![Detail](screenshots/detail.png) | ![Top_Chart](screenshots/top_chart.png) | 
 
