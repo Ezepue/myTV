@@ -74,6 +74,7 @@
 		04B9A3F62DD6860900BC7882 = {
 			isa = PBXGroup;
 			children = (
+				044ADF032DD86DC000E36D60 /* screenshots */,
 				04B9A43B2DD728AA00BC7882 /* README.md */,
 				04B9A4012DD6860900BC7882 /* myTV */,
 				04B9A4002DD6860900BC7882 /* Products */,
@@ -98,7 +99,6 @@
 				04B9A4302DD6981700BC7882 /* App */,
 				04B9A4082DD6860E00BC7882 /* Assets.xcassets */,
 				04B9A4102DD6860E00BC7882 /* Info.plist */,
-				044ADF032DD86DC000E36D60 /* screenshots */,
 				04B9A40A2DD6860E00BC7882 /* Preview Content */,
 			);
 			path = myTV;
